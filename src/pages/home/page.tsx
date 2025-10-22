@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { getUsers } from "@/lib/api/fakeApi"
-import { columns, type User } from "./components/columns"
-import { DataTable } from "./components/data-table"
 import { useEffect, useState } from "react"
 import { AddUser } from "./components/add-user"
+import { columns, type User } from "./components/columns"
+import { DataTable } from "./components/data-table"
 
 export const HomePage = () => {
   const [data, setData] = useState<User[]>([])
