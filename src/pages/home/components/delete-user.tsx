@@ -37,12 +37,16 @@ export const DeleteUser = ({ userId }: { userId: string }) => {
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button variant="destructive" size="sm">
-          <TrashIcon className="size-4" /> Delete User
+        <Button variant="destructive" size="sm" aria-label="Delete user">
+          <TrashIcon className="size-4" aria-hidden="true" /> Delete User
         </Button>
       </PopoverTrigger>
-      <PopoverContent>
-        <p className="text-accent-foreground mb-2">
+      <PopoverContent
+        role="dialog"
+        aria-labelledby="delete-user-title"
+        aria-describedby="delete-user-description"
+      >
+        <p id="delete-user-description" className="text-accent-foreground mb-2">
           Are you sure you want to delete this user?
         </p>
         <Button
@@ -51,9 +55,14 @@ export const DeleteUser = ({ userId }: { userId: string }) => {
           onClick={handleDelete}
           disabled={status === "loading"}
           className="hover:bg-destructive/60"
+          aria-label={
+            status === "loading"
+              ? "Deleting user, please wait"
+              : "Confirm delete user"
+          }
         >
           {status === "loading" ? (
-            <Spinner className="size-4 animate-spin" />
+            <Spinner className="size-4 animate-spin" aria-hidden="true" />
           ) : null}
           Delete User
         </Button>

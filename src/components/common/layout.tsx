@@ -6,10 +6,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <AppSidebar />
 
-      <div className="w-full h-full px-6 py-3 flex flex-col gap-6">
-        <SidebarTrigger />
+      <main
+        className="w-full h-full px-6 py-3 flex flex-col gap-6"
+        role="main"
+        aria-label="Main content"
+      >
+        <SidebarTrigger aria-label="Toggle sidebar" />
         {children}
-      </div>
+      </main>
     </SidebarProvider>
   )
 }

@@ -65,37 +65,59 @@ export function DataTable<TData, TValue>({
   return (
     <div className="w-full space-y-4">
       {/* Filters Section */}
-      <div className="flex items-center gap-4">
-        <Input
-          placeholder="Search by name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) || ""}
-          onChange={event =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <Select
-          value={(table.getColumn("role")?.getFilterValue() as string) || "all"}
-          onValueChange={value =>
-            table
-              .getColumn("role")
-              ?.setFilterValue(value === "all" ? "" : value)
-          }
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filter by role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Roles</SelectItem>
-            <SelectItem value="Admin">Admin</SelectItem>
-            <SelectItem value="Doctor">Doctor</SelectItem>
-            <SelectItem value="Patient">Patient</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="flex items-center gap-4" role="search">
+        <div className="max-w-sm flex-1">
+          <label htmlFor="search-users" className="sr-only">
+            Search users by name
+          </label>
+          <Input
+            id="search-users"
+            placeholder="Search by name..."
+            value={(table.getColumn("name")?.getFilterValue() as string) || ""}
+            onChange={event =>
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+            aria-label="Search users by name"
+          />
+        </div>
+        <div>
+          <label htmlFor="filter-by-role" className="sr-only">
+            Filter users by role
+          </label>
+          <Select
+            value={
+              (table.getColumn("role")?.getFilterValue() as string) || "all"
+            }
+            onValueChange={value =>
+              table
+                .getColumn("role")
+                ?.setFilterValue(value === "all" ? "" : value)
+            }
+          >
+            <SelectTrigger
+              id="filter-by-role"
+              className="w-[180px]"
+              aria-label="Filter by role"
+            >
+              <SelectValue placeholder="Filter by role" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Roles</SelectItem>
+              <SelectItem value="Admin">Admin</SelectItem>
+              <SelectItem value="Doctor">Doctor</SelectItem>
+              <SelectItem value="Patient">Patient</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-md border w-full">
+      <div
+        className="overflow-hidden rounded-md border w-full"
+        role="region"
+        aria-label="Users table"
+      >
         <Table className="w-full">
           <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (
@@ -138,8 +160,16 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-12 p-0 text-center"
                 >
-                  <div className="flex items-center justify-center h-24 text-lg">
-                    <Spinner className="size-6 animate-spin mr-2" /> Loading...
+                  <div
+                    className="flex items-center justify-center h-24 text-lg"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    <Spinner
+                      className="size-6 animate-spin mr-2"
+                      aria-hidden="true"
+                    />
+                    <span>Loading...</span>
                   </div>
                 </TableCell>
               </TableRow>
@@ -149,9 +179,16 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  <div className="flex items-center justify-center h-24 text-2xl">
-                    <AlertCircleIcon className="size-6 mr-2" /> Error loading
-                    data.
+                  <div
+                    className="flex items-center justify-center h-24 text-2xl"
+                    role="alert"
+                    aria-live="assertive"
+                  >
+                    <AlertCircleIcon
+                      className="size-6 mr-2"
+                      aria-hidden="true"
+                    />
+                    <span>Error loading data.</span>
                   </div>
                 </TableCell>
               </TableRow>
@@ -160,6 +197,7 @@ export function DataTable<TData, TValue>({
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center"
+                  role="status"
                 >
                   No results.
                 </TableCell>
@@ -170,8 +208,16 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between px-2">
-        <div className="flex-1 text-sm text-muted-foreground">
+      <div
+        className="flex items-center justify-between px-2"
+        role="navigation"
+        aria-label="Table pagination"
+      >
+        <div
+          className="flex-1 text-sm text-muted-foreground"
+          role="status"
+          aria-live="polite"
+        >
           Showing{" "}
           {table.getState().pagination.pageIndex *
             table.getState().pagination.pageSize +
@@ -190,11 +236,16 @@ export function DataTable<TData, TValue>({
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
+            aria-label="Go to previous page"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
             Previous
           </Button>
-          <div className="text-sm">
+          <div
+            className="text-sm"
+            aria-current="page"
+            aria-label={`Page ${table.getState().pagination.pageIndex + 1} of ${table.getPageCount()}`}
+          >
             Page {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
           </div>
@@ -203,9 +254,10 @@ export function DataTable<TData, TValue>({
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
+            aria-label="Go to next page"
           >
             Next
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
       </div>

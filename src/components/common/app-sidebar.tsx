@@ -31,7 +31,7 @@ export function AppSidebar() {
       <SidebarHeader>
         <img
           src={logo}
-          alt="Logo"
+          alt="Company Logo - Amerikan Hastanesi"
           className="w-full h-full object-contain py-8"
         />
       </SidebarHeader>
@@ -49,8 +49,15 @@ export function AppSidebar() {
                         "bg-accent-foreground text-primary-foreground rounded-lg transition-all duration-300",
                     )}
                   >
-                    <Link to={page.url}>
-                      <page.icon />
+                    <Link
+                      to={page.url}
+                      aria-current={
+                        page.url === window.location.pathname
+                          ? "page"
+                          : undefined
+                      }
+                    >
+                      <page.icon aria-hidden="true" />
                       <span>{page.title}</span>
                     </Link>
                   </SidebarMenuButton>

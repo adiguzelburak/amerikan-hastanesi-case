@@ -24,17 +24,17 @@ export const HomePage = () => {
 
   return (
     <div className="w-full h-full space-y-4">
-      <div className="flex justify-between items-center">
+      <header className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">
+          <h1 className="text-2xl font-bold tracking-tight">
             Users Management
-          </h2>
+          </h1>
           <p className="text-muted-foreground">
             Manage your users and their roles
           </p>
         </div>
         <AddUser />
-      </div>
+      </header>
       <DataTable
         columns={columns}
         data={users}
