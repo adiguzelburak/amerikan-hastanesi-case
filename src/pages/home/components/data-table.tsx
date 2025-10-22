@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import type { ColumnDef, ColumnFiltersState } from "@tanstack/react-table"
 
 import {
@@ -20,7 +22,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { AlertCircleIcon, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   Select,
   SelectContent,
@@ -28,6 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useSearchParams } from "react-router-dom"
 
 export function DataTable<TData, TValue>({
   columns,
@@ -40,7 +43,19 @@ export function DataTable<TData, TValue>({
   isLoading: boolean
   isError: boolean
 }) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const initialPage = parseInt(searchParams.get("page") || "1") - 1
+  const initialPageSize = parseInt(searchParams.get("pageSize") || "10")
+  const initialName = searchParams.get("name") || ""
+  const initialRole = searchParams.get("role") || ""
+
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(() => {
+    const filters: ColumnFiltersState = []
+    if (initialName) filters.push({ id: "name", value: initialName })
+    if (initialRole) filters.push({ id: "role", value: initialRole })
+    return filters
+  })
   const [globalFilter, setGlobalFilter] = useState("")
 
   const table = useReactTable({
@@ -57,10 +72,44 @@ export function DataTable<TData, TValue>({
     },
     initialState: {
       pagination: {
-        pageSize: 10,
+        pageSize: initialPageSize,
+        pageIndex: initialPage,
       },
     },
   })
+
+  useEffect(() => {
+    const params = new URLSearchParams()
+
+    const pageIndex = table.getState().pagination.pageIndex
+    const pageSize = table.getState().pagination.pageSize
+
+    if (pageIndex > 0) {
+      params.set("page", String(pageIndex + 1))
+    }
+
+    if (pageSize !== 10) {
+      params.set("pageSize", String(pageSize))
+    }
+
+    const nameFilter = table.getColumn("name")?.getFilterValue() as string
+    const roleFilter = table.getColumn("role")?.getFilterValue() as string
+
+    if (nameFilter) {
+      params.set("name", nameFilter)
+    }
+
+    if (roleFilter) {
+      params.set("role", roleFilter)
+    }
+
+    setSearchParams(params, { replace: true })
+  }, [
+    table.getState().pagination.pageIndex,
+    table.getState().pagination.pageSize,
+    columnFilters,
+    setSearchParams,
+  ])
 
   return (
     <div className="w-full space-y-4">

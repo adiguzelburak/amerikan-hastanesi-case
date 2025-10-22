@@ -52,7 +52,6 @@ export const EditUser = ({ user }: { user: User }) => {
       try {
         validationSchema.parse(values)
 
-        // Check if user with same name already exists (excluding current user)
         const nameExists = users.some(
           u =>
             u.id !== user.id &&
