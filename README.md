@@ -12,8 +12,6 @@
 ```bash
 npm install
 npm run dev          # Development server (localhost:5173)
-npm run build        # Production build
-npm run test         # Run tests
 ```
 
 ### Tech Stack
