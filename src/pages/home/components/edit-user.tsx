@@ -1,7 +1,12 @@
 import { Checkbox } from "@/components/ui/checkbox"
-import { SelectField } from "@/components/ui/select"
+import { SelectField } from "@/components/ui/custom-select"
 import { Spinner } from "@/components/ui/spinner"
-import { updateUser } from "@/lib/api/fakeApi"
+import { useAppDispatch, useAppSelector } from "@/app/hooks"
+import {
+  updateUser,
+  selectUsersStatusFromState,
+  selectUsersFromState,
+} from "@/features/users/usersSlice"
 import {
   Button,
   Description,
@@ -16,10 +21,13 @@ import { EditIcon } from "lucide-react"
 import { useState } from "react"
 import { z } from "zod"
 import type { User } from "./columns"
+import { toast } from "sonner"
 
 export const EditUser = ({ user }: { user: User }) => {
+  const dispatch = useAppDispatch()
+  const status = useAppSelector(selectUsersStatusFromState)
+  const users = useAppSelector(selectUsersFromState)
   const [isOpen, setIsOpen] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const validationSchema = z.object({
     name: z.string().min(3, "Name must be at least 3 characters"),
@@ -39,9 +47,24 @@ export const EditUser = ({ user }: { user: User }) => {
       role: user.role,
       permissions: user.permissions,
     },
+    enableReinitialize: true,
     validate: values => {
       try {
         validationSchema.parse(values)
+
+        // Check if user with same name already exists (excluding current user)
+        const nameExists = users.some(
+          u =>
+            u.id !== user.id &&
+            u.name.toLowerCase() === values.name.toLowerCase(),
+        )
+
+        if (nameExists) {
+          return {
+            name: "A user with this name already exists",
+          }
+        }
+
         return {}
       } catch (error) {
         if (error instanceof z.ZodError) {
@@ -59,27 +82,31 @@ export const EditUser = ({ user }: { user: User }) => {
       role: string
       permissions: string[]
     }) => {
-      setIsSubmitting(true)
-      updateUser(user.id, {
-        id: user.id,
-        name: values.name,
-        role: values.role,
-        permissions: values.permissions as (
-          | "Read"
-          | "Write"
-          | "Delete"
-          | "Update"
-        )[],
-      })
+      dispatch(
+        updateUser({
+          id: user.id,
+          updatedUser: {
+            id: user.id,
+            name: values.name,
+            role: values.role,
+            permissions: values.permissions as (
+              | "Read"
+              | "Write"
+              | "Delete"
+              | "Update"
+            )[],
+          },
+        }),
+      )
+        .unwrap()
         .then(() => {
           formik.resetForm()
+          toast.success("User updated successfully")
           close()
         })
         .catch(error => {
-          console.error("Error editing user:", error)
-        })
-        .finally(() => {
-          setIsSubmitting(false)
+          toast.error("Error updating user")
+          console.error("Error updating user:", error)
         })
     },
   })
@@ -291,11 +318,11 @@ export const EditUser = ({ user }: { user: User }) => {
 
                 <div className="mt-4">
                   <Button
-                    className="inline-flex items-center gap-2 rounded-md bg-accent-foreground px-3 py-1.5 text-sm/6 font-semibold text-accent shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-accent-foreground/60 transition-all duration-300 data-open:bg-accent-foreground/70"
+                    className="inline-flex disabled:opacity-50 items-center gap-2 rounded-md bg-accent-foreground px-3 py-1.5 text-sm/6 font-semibold text-accent shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-accent-foreground/60 transition-all duration-300 data-open:bg-accent-foreground/70"
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={status === "loading"}
                   >
-                    {isSubmitting ? (
+                    {status === "loading" ? (
                       <Spinner className="size-4 animate-spin" />
                     ) : null}
                     Edit User

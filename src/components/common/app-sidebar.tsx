@@ -21,11 +21,6 @@ const pages = [
     url: "/",
     icon: HomeIcon,
   },
-  {
-    title: "Test",
-    url: "/test",
-    icon: InboxIcon,
-  },
 ]
 
 export function AppSidebar() {

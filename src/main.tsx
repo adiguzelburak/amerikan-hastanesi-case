@@ -2,11 +2,11 @@ import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { Provider } from "react-redux"
 import { createBrowserRouter, RouterProvider } from "react-router"
-import { App } from "./App"
 import { store } from "./app/store"
 import "./index.css"
 import { HomePage } from "./pages/home/page"
 import Layout from "./components/common/layout"
+import { Toaster } from "./components/ui/sonner"
 const container = document.getElementById("root")
 
 const pages = [
@@ -15,14 +15,6 @@ const pages = [
     element: (
       <Layout>
         <HomePage />
-      </Layout>
-    ),
-  },
-  {
-    path: "/test",
-    element: (
-      <Layout>
-        <App />
       </Layout>
     ),
   },
@@ -37,6 +29,7 @@ if (container) {
     <StrictMode>
       <Provider store={store}>
         <RouterProvider router={router} />
+        <Toaster position="top-center" duration={1500} />
       </Provider>
     </StrictMode>,
   )

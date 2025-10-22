@@ -1,45 +1,45 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
-import { getUsers } from "@/lib/api/fakeApi"
-import { useEffect, useState } from "react"
+import { useAppDispatch, useAppSelector } from "@/app/hooks"
+import {
+  fetchUsers,
+  selectUsersFromState,
+  selectUsersStatusFromState,
+  selectUsersErrorFromState,
+} from "@/features/users/usersSlice"
+import { useEffect } from "react"
 import { AddUser } from "./components/add-user"
-import { columns, type User } from "./components/columns"
+import { columns } from "./components/columns"
 import { DataTable } from "./components/data-table"
 
 export const HomePage = () => {
-  const [data, setData] = useState<User[]>([])
-  const [loading, setLoading] = useState(true)
-  const [isError, setIsError] = useState(false)
+  const dispatch = useAppDispatch()
+  const users = useAppSelector(selectUsersFromState)
+  const status = useAppSelector(selectUsersStatusFromState)
+  const error = useAppSelector(selectUsersErrorFromState)
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await getUsers()
-        setData(response as User[])
-      } catch (error) {
-        console.error("Error fetching users:", error)
-        setIsError(true)
-      } finally {
-        setLoading(false)
-      }
+    if (status === "idle") {
+      dispatch(fetchUsers())
     }
-
-    fetchUsers()
-  }, [])
+  }, [status, dispatch])
 
   return (
-    <div className="w-full h-full">
-      <div className="flex justify-end mb-4">
-        <AddUser
-          onUserAdded={updatedUsers => {
-            setData(updatedUsers)
-          }}
-        />
+    <div className="w-full h-full space-y-4">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Users Management
+          </h2>
+          <p className="text-muted-foreground">
+            Manage your users and their roles
+          </p>
+        </div>
+        <AddUser />
       </div>
       <DataTable
         columns={columns}
-        data={data}
-        isLoading={loading}
-        isError={isError}
+        data={users}
+        isLoading={status === "loading"}
+        isError={status === "failed" && error !== null}
       />
     </div>
   )

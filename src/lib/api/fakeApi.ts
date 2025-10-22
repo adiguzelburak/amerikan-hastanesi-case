@@ -15,15 +15,63 @@ const users: User[] = [
   },
   {
     id: "3",
-    name: "Ahmet",
+    name: "Evren",
     role: "Patient",
     permissions: ["Read"],
   },
   {
     id: "4",
-    name: "Ayşe",
+    name: "Furkan",
     role: "Patient",
     permissions: ["Read"],
+  },
+  {
+    id: "5",
+    name: "Zeynep",
+    role: "Doctor",
+    permissions: ["Read", "Write"],
+  },
+  {
+    id: "6",
+    name: "Mehmet",
+    role: "Patient",
+    permissions: ["Read"],
+  },
+  {
+    id: "7",
+    name: "Ayşe",
+    role: "Admin",
+    permissions: ["Read", "Write", "Delete"],
+  },
+  {
+    id: "8",
+    name: "Can",
+    role: "Doctor",
+    permissions: ["Read", "Write"],
+  },
+  {
+    id: "9",
+    name: "Selin",
+    role: "Patient",
+    permissions: ["Read"],
+  },
+  {
+    id: "10",
+    name: "Emre",
+    role: "Patient",
+    permissions: ["Read"],
+  },
+  {
+    id: "11",
+    name: "Deniz",
+    role: "Doctor",
+    permissions: ["Read", "Write"],
+  },
+  {
+    id: "12",
+    name: "Murat",
+    role: "Admin",
+    permissions: ["Read", "Write", "Delete"],
   },
 ]
 
@@ -47,8 +95,11 @@ export function addUser(newUser: User) {
 export function deleteUser(id: string) {
   return new Promise(resolve => {
     setTimeout(() => {
-      const newUsers = users.filter((user: User) => user.id !== id)
-      resolve([...newUsers])
+      const index = users.findIndex((user: User) => user.id === id)
+      if (index > -1) {
+        users.splice(index, 1)
+      }
+      resolve([...users])
     }, 1000)
   })
 }
@@ -56,10 +107,11 @@ export function deleteUser(id: string) {
 export function updateUser(id: string, updatedUser: User) {
   return new Promise(resolve => {
     setTimeout(() => {
-      const newUsers = users.map((user: User) =>
-        user.id === id ? updatedUser : user,
-      )
-      resolve([...newUsers])
+      const index = users.findIndex((user: User) => user.id === id)
+      if (index > -1) {
+        users[index] = updatedUser
+      }
+      resolve([...users])
     }, 1000)
   })
 }

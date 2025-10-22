@@ -1,6 +1,11 @@
-import { SelectField } from "@/components/ui/select"
+import { SelectField } from "@/components/ui/custom-select"
 import { Spinner } from "@/components/ui/spinner"
-import { addUser } from "@/lib/api/fakeApi"
+import { useAppDispatch, useAppSelector } from "@/app/hooks"
+import {
+  addUser,
+  selectUsersStatusFromState,
+  selectUsersFromState,
+} from "@/features/users/usersSlice"
 import {
   Button,
   Description,
@@ -16,14 +21,13 @@ import { useState } from "react"
 import { z } from "zod"
 import type { User } from "./columns"
 import { Checkbox } from "@/components/ui/checkbox"
+import { toast } from "sonner"
 
-export const AddUser = ({
-  onUserAdded,
-}: {
-  onUserAdded: (users: User[]) => void
-}) => {
+export const AddUser = () => {
+  const dispatch = useAppDispatch()
+  const status = useAppSelector(selectUsersStatusFromState)
+  const users = useAppSelector(selectUsersFromState)
   const [isOpen, setIsOpen] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const validationSchema = z.object({
     name: z.string().min(3, "Name must be at least 3 characters"),
@@ -46,6 +50,18 @@ export const AddUser = ({
     validate: values => {
       try {
         validationSchema.parse(values)
+
+        // Check if user with same name already exists
+        const nameExists = users.some(
+          user => user.name.toLowerCase() === values.name.toLowerCase(),
+        )
+
+        if (nameExists) {
+          return {
+            name: "A user with this name already exists",
+          }
+        }
+
         return {}
       } catch (error) {
         if (error instanceof z.ZodError) {
@@ -63,28 +79,28 @@ export const AddUser = ({
       role: string
       permissions: string[]
     }) => {
-      setIsSubmitting(true)
-      addUser({
-        id: Math.random().toString(36).substring(2, 15),
-        name: values.name,
-        role: values.role,
-        permissions: values.permissions as (
-          | "Read"
-          | "Write"
-          | "Delete"
-          | "Update"
-        )[],
-      } as User)
-        .then(response => {
-          onUserAdded(response as User[])
+      dispatch(
+        addUser({
+          id: Math.random().toString(36).substring(2, 15),
+          name: values.name,
+          role: values.role,
+          permissions: values.permissions as (
+            | "Read"
+            | "Write"
+            | "Delete"
+            | "Update"
+          )[],
+        } as User),
+      )
+        .unwrap()
+        .then(() => {
           formik.resetForm()
+          toast.success("User added successfully")
           close()
         })
         .catch(error => {
+          toast.error("Error adding user")
           console.error("Error adding user:", error)
-        })
-        .finally(() => {
-          setIsSubmitting(false)
         })
     },
   })
@@ -296,11 +312,11 @@ export const AddUser = ({
 
                 <div className="mt-4">
                   <Button
-                    className="inline-flex items-center gap-2 rounded-md bg-accent-foreground px-3 py-1.5 text-sm/6 font-semibold text-accent shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-accent-foreground/60 transition-all duration-300 data-open:bg-accent-foreground/70"
+                    className="disabled:opacity-50 inline-flex items-center gap-2 rounded-md bg-accent-foreground px-3 py-1.5 text-sm/6 font-semibold text-accent shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-accent-foreground/60 transition-all duration-300 data-open:bg-accent-foreground/70"
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={status === "loading"}
                   >
-                    {isSubmitting ? (
+                    {status === "loading" ? (
                       <Spinner className="size-4 animate-spin" />
                     ) : null}
                     Add User
