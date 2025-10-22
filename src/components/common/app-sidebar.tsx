@@ -1,23 +1,25 @@
+import logo from "@/assets/images/logo.png"
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarFooter,
-  SidebarHeader,
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
-import { HomeIcon, InboxIcon } from "lucide-react"
+import { HomeIcon } from "lucide-react"
 import { Link } from "react-router-dom"
-import logo from "@/assets/images/images.png"
+import { ModeToggle } from "./mode-toggle"
+import { Field, Label } from "@headlessui/react"
 
 const pages = [
   {
-    title: "Dashboard",
+    title: "User Management",
     url: "/",
     icon: HomeIcon,
   },
@@ -44,7 +46,7 @@ export function AppSidebar() {
                     asChild
                     className={cn(
                       page.url === window.location.pathname &&
-                        "bg-sidebar-foreground text-sidebar-primary-foreground rounded-lg transition-all duration-300",
+                        "bg-accent-foreground text-primary-foreground rounded-lg transition-all duration-300",
                     )}
                   >
                     <Link to={page.url}>
@@ -58,7 +60,14 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <Field className="flex items-center gap-2 px-4">
+          <Label className="text-sm/6 font-medium text-accent-foreground">
+            Theme
+          </Label>
+          <ModeToggle />
+        </Field>
+      </SidebarFooter>
     </Sidebar>
   )
 }

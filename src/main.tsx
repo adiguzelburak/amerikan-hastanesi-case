@@ -7,6 +7,7 @@ import "./index.css"
 import { HomePage } from "./pages/home/page"
 import Layout from "./components/common/layout"
 import { Toaster } from "./components/ui/sonner"
+import { ThemeProvider } from "./context/theme-provider"
 const container = document.getElementById("root")
 
 const pages = [
@@ -28,8 +29,10 @@ if (container) {
   root.render(
     <StrictMode>
       <Provider store={store}>
-        <RouterProvider router={router} />
-        <Toaster position="top-center" duration={1500} />
+        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+          <RouterProvider router={router} />
+          <Toaster position="top-center" duration={1500} />
+        </ThemeProvider>
       </Provider>
     </StrictMode>,
   )

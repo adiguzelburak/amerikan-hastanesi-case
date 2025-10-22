@@ -123,7 +123,7 @@ export const EditUser = ({ user }: { user: User }) => {
     <>
       <Button
         onClick={open}
-        className="flex items-center justify-center gap-2 rounded-md bg-accent-foreground px-2 py-1.5 text-sm font-medium text-accent focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-black/30"
+        className="flex items-center justify-center gap-2 rounded-md bg-accent-foreground px-2 py-1.5 text-sm font-medium text-accent focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-accent-foreground/60"
       >
         <EditIcon className="size-4" /> Edit User
       </Button>
