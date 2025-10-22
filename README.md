@@ -1,27 +1,79 @@
-# vite-template-redux
+# User Management System
 
-Uses [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/), and [React Testing Library](https://github.com/testing-library/react-testing-library) to create a modern [React](https://react.dev/) app compatible with [Create React App](https://create-react-app.dev/)
+[English](#english) | [Türkçe](#turkish)
 
-```sh
-npx tiged reduxjs/redux-templates/packages/vite-template-redux my-app
+---
+
+<a name="english"></a>
+## 🇬🇧 English
+
+### Installation & Running
+
+```bash
+npm install
+npm run dev          # Development server (localhost:5173)
+npm run build        # Production build
+npm run test         # Run tests
 ```
 
-## Goals
+### Tech Stack
 
-- Easy migration from Create React App or Vite
-- As beginner friendly as Create React App
-- Optimized performance compared to Create React App
-- Customizable without ejecting
+- **React 19** + **TypeScript** - Type-safe UI development
+- **Redux Toolkit** - Global state management
+- **Vite** - Fast build tool
+- **Tailwind CSS** - Utility-first styling
+- **Headless UI** - Styling
+- **Radix UI** - Accessible components
+- **TanStack Table** - Data tables
+- **Formik + Zod** - Form handling & validation
 
-## Scripts
+### Folder Structure
 
-- `dev`/`start` - start dev server and open browser
-- `build` - build for production
-- `preview` - locally preview production build
-- `test` - launch test runner
+```
+src/
+├── app/              # Redux store config
+├── features/         # Redux slices (users)
+├── pages/            # Page components
+├── components/       # Reusable components
+│   ├── common/       # Shared components
+│   └── ui/           # Base UI components
+├── hooks/            # Custom hooks
+├── lib/              # Utils & API layer
+└── context/          # React contexts
+```
 
-## Inspiration
+### Development Standards
 
-- [Create React App](https://github.com/facebook/create-react-app/tree/main/packages/cra-template)
-- [Vite](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react)
-- [Vitest](https://github.com/vitest-dev/vitest/tree/main/examples/react-testing-lib)
+#### Naming Conventions
+- **Components/Hooks:** `kebab-case` (e.g., `add-user.tsx`, `use-mobile.ts`)
+  - Reason: Filesystem-friendly, URL-friendly, consistent with modern frameworks
+- **Utils/Libs:** `camelCase` (e.g., `fakeApi.ts`, `utils.ts`)
+  - Reason: Follows JavaScript naming conventions
+
+#### State Management - Redux Toolkit
+- **Why Redux?** Predictable state flow, excellent DevTools, scalability, better for team collaboration
+- **Organization:** Feature-based slices in `/features` directory
+- **Structure:** Each slice contains state, actions, thunks, and selectors
+- **Alternative:** Context API was considered but Redux offers better debugging and middleware support
+
+#### Styling - Tailwind CSS
+- **Why Tailwind?** Rapid development, consistent design system, excellent performance
+- **Approach:** Utility classes in JSX, use `cn()` utility for complex combinations
+- **No custom CSS classes** - composition of utilities
+
+#### Import Strategy
+- **Path alias:** `@/` → `./src/` for cleaner imports
+- **No barrel exports** - individual imports for better tree-shaking
+```tsx
+// ✅ Preferred
+import { Button } from "@/components/ui/button"
+
+// ❌ Avoided
+import { Button } from "@/components/ui"
+```
+
+#### Architecture
+**Three-Layer Approach:**
+1. **Presentation** (`/pages`, `/components`) - UI components
+2. **Business Logic** (`/features`) - Redux slices & thunks
+3. **Data** (`/lib/api`) - API abstraction

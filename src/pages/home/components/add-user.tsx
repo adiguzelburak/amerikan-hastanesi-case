@@ -51,7 +51,6 @@ export const AddUser = () => {
       try {
         validationSchema.parse(values)
 
-        // Check if user with same name already exists
         const nameExists = users.some(
           user => user.name.toLowerCase() === values.name.toLowerCase(),
         )
