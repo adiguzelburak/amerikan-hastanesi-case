@@ -6,16 +6,25 @@ import { App } from "./App"
 import { store } from "./app/store"
 import "./index.css"
 import { HomePage } from "./pages/home/page"
+import Layout from "./components/common/layout"
 const container = document.getElementById("root")
 
 const pages = [
   {
     path: "/",
-    element: <HomePage />,
+    element: (
+      <Layout>
+        <HomePage />
+      </Layout>
+    ),
   },
   {
     path: "/test",
-    element: <App />,
+    element: (
+      <Layout>
+        <App />
+      </Layout>
+    ),
   },
 ]
 

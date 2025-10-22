@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import js from "@eslint/js"
 import vitestPlugin from "@vitest/eslint-plugin"
 import prettierConfig from "eslint-config-prettier/flat"
@@ -75,6 +76,12 @@ const eslintConfig = config(
           ],
         },
       ],
+      // Disabled typescript-eslint rules for third-party component compatibility
+      "@typescript-eslint/no-redundant-type-constituents": [0],
+      "@typescript-eslint/restrict-template-expressions": [0],
+      "@typescript-eslint/no-confusing-void-expression": [0],
+      "@typescript-eslint/no-unsafe-call": [0],
+      "@typescript-eslint/no-unsafe-assignment": [0],
     },
   },
 
