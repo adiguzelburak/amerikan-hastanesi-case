@@ -29,7 +29,11 @@ export const HomePage = () => {
   return (
     <div className="w-full h-full">
       <div className="flex justify-end mb-4">
-        <AddUser />
+        <AddUser
+          onUserAdded={updatedUsers => {
+            setData(updatedUsers)
+          }}
+        />
       </div>
       <DataTable
         columns={columns}

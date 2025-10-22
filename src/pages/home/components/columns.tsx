@@ -15,7 +15,7 @@ import { MoreHorizontal } from "lucide-react"
 export const userSchema = z.object({
   id: z.string(),
   name: z.string(),
-  role: z.enum(["Admin", "Doctor", "Patient"]),
+  role: z.string(),
   permissions: z.array(z.enum(["Read", "Write", "Delete", "Update"])),
 })
 
@@ -40,6 +40,7 @@ export const columns: ColumnDef<User>[] = [
     },
   },
   {
+    header: "Actions",
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {

@@ -11,36 +11,35 @@ const users: User[] = [
     id: "2",
     name: "İrem",
     role: "Doctor",
-    permissions: ["Read", "Write", "Delete"],
+    permissions: ["Read", "Write"],
   },
   {
     id: "3",
     name: "Ahmet",
     role: "Patient",
-    permissions: ["Read", "Write", "Delete"],
+    permissions: ["Read"],
   },
   {
     id: "4",
     name: "Ayşe",
     role: "Patient",
-    permissions: ["Read", "Write", "Delete"],
+    permissions: ["Read"],
   },
 ]
 
 export function getUsers() {
   return new Promise(resolve => {
-    setTimeout(() => resolve(users), 1000)
+    setTimeout(() => resolve([...users]), 1000)
   })
 }
 
 export function addUser(newUser: User) {
   const newUserId = Math.random().toString(36).substring(2, 15)
-  const newUserWithId: User = { ...newUser, id: newUserId }
 
   return new Promise(resolve => {
     setTimeout(() => {
-      users.push(newUserWithId)
-      resolve(users)
+      users.push({ ...newUser, id: newUserId })
+      resolve([...users])
     }, 1000)
   })
 }
@@ -49,7 +48,7 @@ export function deleteUser(id: string) {
   return new Promise(resolve => {
     setTimeout(() => {
       const newUsers = users.filter((user: User) => user.id !== id)
-      resolve(newUsers)
+      resolve([...newUsers])
     }, 1000)
   })
 }
@@ -60,7 +59,7 @@ export function updateUser(id: string, updatedUser: User) {
       const newUsers = users.map((user: User) =>
         user.id === id ? updatedUser : user,
       )
-      resolve(newUsers)
+      resolve([...newUsers])
     }, 1000)
   })
 }
